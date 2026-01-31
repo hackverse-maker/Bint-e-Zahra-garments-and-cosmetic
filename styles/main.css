@@ -1,0 +1,85 @@
+/* Bint-e-Zahra Premium Elegant Styles */
+:root {
+    --background: #fffafa;
+    /* Soft snow */
+    --foreground: #1f1111;
+    --primary: #be185d;
+    /* Elegant rose */
+    --secondary: #fdf2f8;
+    /* Soft pink */
+    --accent: #f59e0b;
+    /* Sophisticated gold */
+    --gray-rose: #9d174d;
+    --soft-shadow: 0 10px 30px rgba(190, 24, 93, 0.05);
+}
+
+body {
+    font-family: 'Inter', serif;
+    color: var(--foreground);
+    background-color: var(--background);
+    margin: 0;
+    padding: 0;
+}
+
+h1,
+h2,
+h3,
+.font-elegant {
+    font-family: 'Inter', sans-serif;
+    /* Or a serif font if loaded */
+    font-weight: 700;
+}
+
+.text-rose-gold {
+    color: var(--primary);
+}
+
+.bg-soft-pink {
+    background-color: var(--secondary);
+}
+
+/* Elegant transitions */
+.transition-luxury {
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Fixed Header Styles */
+nav.fixed {
+    transition: all 0.4s ease;
+}
+
+nav.fixed.scrolled {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: var(--soft-shadow);
+}
+
+/* Buttons */
+.btn-elegant {
+    background-color: var(--foreground);
+    color: white;
+    padding: 0.75rem 2rem;
+    border-radius: 9999px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+.btn-elegant:hover {
+    background-color: transparent;
+    color: var(--foreground);
+    border-color: var(--foreground);
+}
+
+/* Swiper overrides for elegance */
+.swiper-pagination-bullet {
+    background: #ccc !important;
+    opacity: 0.5;
+}
+
+.swiper-pagination-bullet-active {
+    background: var(--primary) !important;
+    opacity: 1;
+    width: 25px !important;
+    border-radius: 5px !important;
+}

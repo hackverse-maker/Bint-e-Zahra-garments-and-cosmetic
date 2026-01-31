@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin CMS | Bint-e-Zahra</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body class="bg-gray-50 flex flex-col md:flex-row min-h-screen">
+
+    <aside class="w-full md:w-72 bg-white border-r border-gray-200 p-6 flex flex-col gap-10">
+        <div class="flex flex-col items-center gap-4 mb-2">
+            <img src="logo-removebg-preview.png" alt="Logo" class="h-20 w-auto object-contain">
+            <div class="text-center">
+                <h2 class="text-xl font-bold text-rose-gold tracking-tight">Bint-e-Zahra</h2>
+                <p class="text-[9px] text-gray-400 font-bold uppercase tracking-[0.2em] mt-1">Premium Admin CMS</p>
+            </div>
+        </div>
+        <div class="space-y-3">
+            <a href="index.html"
+                class="flex items-center justify-center gap-2 w-full bg-rose-50 text-rose-700 py-3 rounded-xl text-sm font-bold border border-rose-100 hover:bg-rose-100 transition-all">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+                View Landing Page
+            </a>
+        </div>
+        <nav class="flex-grow space-y-2">
+            <button onclick="showPanel('sections')" id="btn-sections"
+                class="nav-btn w-full text-left px-4 py-3 rounded-xl text-sm font-semibold hover:bg-rose-50 hover:text-rose-700 transition-all">Page
+                Layout</button>
+            <button onclick="showPanel('sliders')" id="btn-sliders"
+                class="nav-btn w-full text-left px-4 py-3 rounded-xl text-sm font-semibold hover:bg-rose-50 hover:text-rose-700 transition-all">Hero
+                Sliders</button>
+            <button onclick="showPanel('products')" id="btn-products"
+                class="nav-btn w-full text-left px-4 py-3 rounded-xl text-sm font-semibold hover:bg-rose-50 hover:text-rose-700 transition-all">Products</button>
+            <button onclick="showPanel('categories')" id="btn-categories"
+                class="nav-btn w-full text-left px-4 py-3 rounded-xl text-sm font-semibold hover:bg-rose-50 hover:text-rose-700 transition-all">Categories</button>
+        </nav>
+        <div class="pt-6 border-t border-gray-100">
+            <button onclick="adminLogout()"
+                class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-red-500 hover:bg-red-50 transition-all">Logout</button>
+        </div>
+    </aside>
+
+    <main class="flex-1 p-6 md:p-12 overflow-y-auto">
+        <!-- Dashboard Header -->
+        <header id="panel-header" class="mb-12 flex justify-between items-center">
+            <div>
+                <h1 id="panel-title" class="text-3xl font-bold text-gray-900">Dashboard</h1>
+                <p id="panel-desc" class="text-gray-500 mt-1">Manage your storefront content.</p>
+            </div>
+            <div id="panel-actions"></div>
+        </header>
+
+        <!-- Dynamic Content Area -->
+        <div id="panel-content" class="bg-white rounded-[2.5rem] shadow-sm border border-gray-100/50 p-8 min-h-[600px]">
+            <!-- Content will be injected here -->
+        </div>
+    </main>
+
+    <!-- Modal Template -->
+    <div id="modal" class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden items-center justify-center p-4 z-[200]">
+        <div class="bg-white p-10 rounded-[2.5rem] max-w-lg w-full shadow-2xl animate-scale">
+            <h2 id="modal-title" class="text-2xl font-bold mb-6">Action</h2>
+            <form id="modal-form" class="space-y-4">
+                <div id="modal-fields" class="space-y-4"></div>
+                <div class="flex gap-4 pt-6">
+                    <button type="button" onclick="closeModal()"
+                        class="flex-1 px-6 py-3 border border-gray-200 rounded-2xl font-bold hover:bg-gray-50">Cancel</button>
+                    <button type="submit"
+                        class="flex-1 px-6 py-3 bg-black text-white rounded-2xl font-bold hover:bg-rose-700 transition-colors">Save
+                        Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/products.js"></script>
+    <script src="js/admin.js"></script>
+    <script>
+        checkAdminAuth();
+
+        const content = document.getElementById('panel-content');
+        const header = document.getElementById('panel-header');
+        const title = document.getElementById('panel-title');
+        const desc = document.getElementById('panel-desc');
+        const actions = document.getElementById('panel-actions');
+        const modal = document.getElementById('modal');
+        const mFields = document.getElementById('modal-fields');
+        const mForm = document.getElementById('modal-form');
+        const mTitle = document.getElementById('modal-title');
+
+        let currentView = 'sections';
+
+        function showPanel(view) {
+            currentView = view;
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('bg-rose-50', 'text-rose-700'));
+            document.getElementById(`btn-${view}`).classList.add('bg-rose-50', 'text-rose-700');
+
+            actions.innerHTML = '';
+            switch (view) {
+                case 'sections': renderSectionsPanel(); break;
+                case 'sliders': renderSlidersPanel(); break;
+                case 'products': renderProductsPanel(); break;
+                case 'categories': renderCategoriesPanel(); break;
+            }
+        }
+
+        // --- Sections Management ---
+        function renderSectionsPanel() {
+            title.textContent = "Page Layout";
+            desc.textContent = "Arrange your landing page sections.";
+            const sections = getData('pageSections');
+            content.innerHTML = `
+                <div class="space-y-4">
+                    ${sections.map((s, i) => `
+                        <div class="flex items-center justify-between p-6 bg-gray-50 rounded-2xl border border-gray-100">
+                            <div class="flex items-center gap-4">
+                                <div class="bg-white p-3 rounded-xl shadow-sm font-bold text-rose-gold">#${i + 1}</div>
+                                <div>
+                                    <h4 class="font-bold text-lg capitalize">${s.type.replace(/([A-Z])/g, ' $1')}</h4>
+                                    <p class="text-xs text-gray-400">ID: ${s.id}</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <button onclick="moveSection(${i}, -1)" class="p-2 bg-white rounded-lg shadow-sm hover:text-rose-gold">↑</button>
+                                <button onclick="moveSection(${i}, 1)" class="p-2 bg-white rounded-lg shadow-sm hover:text-rose-gold">↓</button>
+                                <button onclick="toggleSection('${s.id}')" class="px-4 py-2 rounded-xl text-xs font-bold ${s.active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">${s.active ? 'Active' : 'Hidden'}</button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function moveSection(index, delta) {
+            let sections = getData('pageSections');
+            const newIndex = index + delta;
+            if (newIndex >= 0 && newIndex < sections.length) {
+                const temp = sections[index];
+                sections[index] = sections[newIndex];
+                sections[newIndex] = temp;
+                saveData('pageSections', sections);
+                renderSectionsPanel();
+            }
+        }
+
+        function toggleSection(id) {
+            let sections = getData('pageSections');
+            const s = sections.find(x => x.id === id);
+            if (s) {
+                s.active = !s.active;
+                saveData('pageSections', sections);
+                renderSectionsPanel();
+            }
+        }
+
+        // --- Sliders Management ---
+        function renderSlidersPanel() {
+            title.textContent = "Hero Sliders";
+            desc.textContent = "Manage background images and text for the main banner.";
+            actions.innerHTML = `<button onclick="showSliderModal()" class="bg-black text-white px-6 py-2.5 rounded-xl font-bold">+ Add Slider</button>`;
+            const sliders = getData('sliders');
+            content.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    ${sliders.map(s => `
+                        <div class="relative h-64 rounded-3xl overflow-hidden group">
+                            <img src="${s.image}" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-black/40 flex flex-col justify-end p-6">
+                                <h3 class="text-white font-bold text-xl">${s.title}</h3>
+                                <button onclick="deleteSlider(${s.id})" class="absolute top-4 right-4 p-2 bg-red-500 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">Delete</button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function showSliderModal() {
+            mTitle.textContent = "Add New Slider";
+            mFields.innerHTML = `
+                <input type="text" id="s-title" placeholder="Banner Title" required class="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:ring-1 focus:ring-rose-200">
+                <input type="text" id="s-image" placeholder="Image URL" required class="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:ring-1 focus:ring-rose-200">
+                <input type="text" id="s-link" placeholder="Button Link (e.g. shop.html)" required class="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:ring-1 focus:ring-rose-200">
+            `;
+            mForm.onsubmit = (e) => {
+                e.preventDefault();
+                const sliders = getData('sliders');
+                const newId = sliders.length > 0 ? sliders[sliders.length - 1].id + 1 : 1;
+                sliders.push({
+                    id: newId,
+                    title: document.getElementById('s-title').value,
+                    image: document.getElementById('s-image').value,
+                    link: document.getElementById('s-link').value
+                });
+                saveData('sliders', sliders);
+                closeModal();
+                renderSlidersPanel();
+            };
+            modal.style.display = 'flex';
+        }
+
+        function deleteSlider(id) {
+            let sliders = getData('sliders');
+            sliders = sliders.filter(s => s.id !== id);
+            saveData('sliders', sliders);
+            renderSlidersPanel();
+        }
+
+        // --- Categories Management ---
+        function renderCategoriesPanel() {
+            title.textContent = "Product Categories";
+            desc.textContent = "Organize your collections.";
+            actions.innerHTML = `<button onclick="showCategoryModal()" class="bg-black text-white px-6 py-2.5 rounded-xl font-bold">+ Add Category</button>`;
+            const cats = getData('categories');
+            content.innerHTML = `
+                <div class="space-y-4">
+                    ${cats.map(c => `
+                        <div class="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-2xl shadow-sm">
+                            <div class="flex items-center gap-4">
+                                <img src="${c.image}" class="h-16 w-16 object-cover rounded-xl bg-gray-50">
+                                <div>
+                                    <h4 class="font-bold text-gray-900">${c.name}</h4>
+                                    <p class="text-xs text-gray-400">${c.id}</p>
+                                </div>
+                            </div>
+                            <button onclick="deleteCategory('${c.id}')" class="text-red-500 font-bold px-4 py-2 hover:bg-red-50 rounded-xl transition-all">Delete</button>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function showCategoryModal() {
+            mTitle.textContent = "Add Category";
+            mFields.innerHTML = `
+                <input type="text" id="c-id" placeholder="Slug ID (e.g. shoes)" required class="w-full p-4 bg-gray-50 rounded-xl outline-none">
+                <input type="text" id="c-name" placeholder="Name" required class="w-full p-4 bg-gray-50 rounded-xl outline-none">
+                <input type="text" id="c-image" placeholder="Cover Image URL" required class="w-full p-4 bg-gray-50 rounded-xl outline-none">
+                <textarea id="c-desc" placeholder="Description" class="w-full p-4 bg-gray-50 rounded-xl outline-none"></textarea>
+            `;
+            mForm.onsubmit = (e) => {
+                e.preventDefault();
+                const cats = getData('categories');
+                cats.push({
+                    id: document.getElementById('c-id').value.toLowerCase(),
+                    name: document.getElementById('c-name').value,
+                    image: document.getElementById('c-image').value,
+                    description: document.getElementById('c-desc').value
+                });
+                saveData('categories', cats);
+                closeModal();
+                renderCategoriesPanel();
+            };
+            modal.style.display = 'flex';
+        }
+
+        function deleteCategory(id) {
+            let cats = getData('categories');
+            cats = cats.filter(c => c.id !== id);
+            saveData('categories', cats);
+            renderCategoriesPanel();
+        }
+
+        // --- Products Panel (Simplified) ---
+        function renderProductsPanel() {
+            title.textContent = "Products Inventory";
+            desc.textContent = "Manage individual store items.";
+            actions.innerHTML = `<button onclick="showProductModal()" class="bg-black text-white px-6 py-2.5 rounded-xl font-bold">+ New Product</button>`;
+            const products = getData('products');
+            content.innerHTML = `
+                <div class="grid grid-cols-1 gap-4">
+                    ${products.map(p => `
+                        <div class="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-2xl shadow-sm">
+                            <div class="flex items-center gap-4">
+                                <img src="${p.image}" class="h-16 w-16 object-cover rounded-xl">
+                                <div>
+                                    <h4 class="font-bold">${p.name}</h4>
+                                    <p class="text-xs text-rose-gold font-bold">PKR ${p.price.toLocaleString()}</p>
+                                </div>
+                            </div>
+                            <button onclick="deleteProduct(${p.id})" class="p-2 text-red-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                            </button>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function showProductModal() {
+            const cats = getData('categories');
+            mTitle.textContent = "Add Product";
+            mFields.innerHTML = `
+                <input type="text" id="p-name" placeholder="Product Name" required class="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:ring-1 focus:ring-rose-200">
+                <select id="p-cat" class="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:ring-1 focus:ring-rose-200">
+                    ${cats.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
+                </select>
+                <input type="number" id="p-price" placeholder="Price (PKR)" required class="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:ring-1 focus:ring-rose-200">
+                <input type="text" id="p-image" placeholder="Image URL" required class="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:ring-1 focus:ring-rose-200">
+            `;
+            mForm.onsubmit = (e) => {
+                e.preventDefault();
+                const products = getData('products');
+                const newId = products.length > 0 ? products[products.length - 1].id + 1 : 1;
+                products.push({
+                    id: newId,
+                    name: document.getElementById('p-name').value,
+                    category: document.getElementById('p-cat').value,
+                    price: parseFloat(document.getElementById('p-price').value),
+                    image: document.getElementById('p-image').value
+                });
+                saveData('products', products);
+                closeModal();
+                renderProductsPanel();
+            };
+            modal.style.display = 'flex';
+        }
+
+        function deleteProduct(id) {
+            let products = getData('products');
+            products = products.filter(p => p.id !== id);
+            saveData('products', products);
+            renderProductsPanel();
+        }
+
+        function closeModal() { modal.style.display = 'none'; }
+
+        showPanel('sections');
+    </script>
+</body>
+
+</html>

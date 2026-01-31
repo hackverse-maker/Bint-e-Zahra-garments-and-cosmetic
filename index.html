@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bint-e-Zahra | Premium Garments & Cosmetics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body class="bg-white">
+
+    <!-- Fixed Header -->
+    <nav class="fixed top-0 left-0 right-0 z-50 py-5 transition-all duration-300">
+        <div class="container mx-auto px-4 md:px-6 flex items-center justify-between border-b border-gray-50/50 pb-4">
+            <a href="index.html" class="flex items-center gap-4 group">
+                <img src="logo-removebg-preview.png" alt="Bint-e-Zahra"
+                    class="h-14 md:h-20 w-auto object-contain transition-transform group-hover:scale-105">
+                <div class="flex flex-col">
+                    <span
+                        class="text-xl md:text-2xl font-bold tracking-tight leading-none text-rose-gold">BINT-E-ZAHRA</span>
+                    <span class="text-[10px] font-semibold text-gray-500 tracking-[0.2em] uppercase mt-1">Garments &
+                        Cosmetics</span>
+                </div>
+            </a>
+            <div class="hidden md:flex items-center space-x-10">
+                <a href="index.html" class="text-sm font-bold text-rose-gold">Home</a>
+                <a href="shop.html" class="text-sm font-medium hover:text-rose-gold transition-colors">Collection</a>
+                <a href="contact.html" class="text-sm font-medium hover:text-rose-gold transition-colors">Contact</a>
+            </div>
+            <div class="flex items-center space-x-6">
+                <a href="cart.html" class="relative group">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        class="h-6 w-6 text-gray-700 group-hover:text-rose-gold transition-colors" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                    </svg>
+                    <span
+                        class="cart-count absolute -top-2 -right-2 bg-pink-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">0</span>
+                </a>
+                <button id="mobile-menu-btn" class="md:hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16m-7 6h7" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div id="mobile-menu"
+            class="hidden absolute top-full left-0 right-0 bg-white border-b border-gray-100 p-6 space-y-4 md:hidden">
+            <a href="index.html" class="block font-bold text-rose-gold">Home</a>
+            <a href="shop.html" class="block font-medium">Collection</a>
+            <a href="contact.html" class="block font-medium">Contact</a>
+        </div>
+    </nav>
+
+    <main id="main-content" class="space-y-0">
+        <!-- Sections will be injected here -->
+    </main>
+
+    <!-- Global Footer with Contact Form -->
+    <footer class="bg-gray-900 text-gray-300 pt-20 pb-10">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+                <div class="space-y-6">
+                    <h3 class="text-2xl font-bold text-white">BINT-E-ZAHRA</h3>
+                    <p class="text-sm leading-relaxed opacity-70">Elevating your style with premium garments and
+                        sophisticated cosmetics. Quality you can trust.</p>
+                </div>
+                <div>
+                    <h4 class="text-white font-semibold mb-6">Explore</h4>
+                    <ul class="space-y-4 text-sm">
+                        <li><a href="index.html" class="hover:text-white">Home</a></li>
+                        <li><a href="shop.html" class="hover:text-white">Collection</a></li>
+                        <li><a href="contact.html" class="hover:text-white">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-semibold mb-6">Brand</h4>
+                    <ul class="space-y-4 text-sm">
+                        <li><a href="#" class="hover:text-white">Our Story</a></li>
+                        <li><a href="#" class="hover:text-white">Sustainability</a></li>
+                        <li><a href="#" class="hover:text-white">Shipping Policy</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-semibold mb-6">Message Us</h4>
+                    <form action="https://formsubmit.co/tariqastory5@gmail.com" method="POST" class="space-y-3">
+                        <input type="text" name="name" placeholder="Name" required
+                            class="w-full px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-xl text-sm text-white focus:ring-1 focus:ring-pink-500 outline-none">
+                        <input type="email" name="email" placeholder="Email" required
+                            class="w-full px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-xl text-sm text-white focus:ring-1 focus:ring-pink-500 outline-none">
+                        <textarea name="message" placeholder="Message" rows="2" required
+                            class="w-full px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-xl text-sm text-white focus:ring-1 focus:ring-pink-500 outline-none"></textarea>
+                        <button type="submit"
+                            class="w-full bg-pink-700 hover:bg-pink-600 text-white py-2.5 rounded-xl text-sm font-bold transition-all">Send
+                            to Gmail</button>
+                    </form>
+                </div>
+            </div>
+            <div
+                class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs opacity-50">
+                <p>&copy; 2026 Bint-e-Zahra Garments & Cosmetics. All rights reserved.</p>
+                <div class="flex gap-6">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="js/products.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        const main = document.getElementById('main-content');
+
+        function renderLandingPage() {
+            const sections = getData('pageSections');
+            main.innerHTML = '';
+
+            sections.forEach(section => {
+                if (!section.active) return;
+
+                const wrapper = document.createElement('section');
+                wrapper.id = section.id;
+
+                switch (section.type) {
+                    case 'hero':
+                        renderHero(wrapper);
+                        break;
+                    case 'features':
+                        renderFeatures(wrapper);
+                        break;
+                    case 'featuredProducts':
+                        renderFeaturedProducts(wrapper, section.title);
+                        break;
+                    case 'categoryGrid':
+                        renderCategoryGrid(wrapper);
+                        break;
+                }
+                main.appendChild(wrapper);
+            });
+
+            // Initialize swiper after hero is rendered
+            if (document.querySelector('.hero-swiper')) {
+                new Swiper('.hero-swiper', {
+                    loop: true,
+                    pagination: { el: '.swiper-pagination', clickable: true },
+                    navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+                    autoplay: { delay: 5000 }
+                });
+            }
+        }
+
+        function renderHero(container) {
+            const sliders = getData('sliders');
+            container.innerHTML = `
+                <div class="swiper hero-swiper h-[500px] md:h-[800px] w-full">
+                    <div class="swiper-wrapper">
+                        ${sliders.map(s => `
+                            <div class="swiper-slide relative flex items-center bg-cover bg-center" style="background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.3)), url('${s.image}')">
+                                <div class="container mx-auto px-6">
+                                    <div class="max-w-3xl space-y-6">
+                                        <h1 class="text-5xl md:text-8xl font-bold text-white leading-tight">${s.title}</h1>
+                                        <a href="${s.link}" class="inline-block btn-elegant">Shop Collection</a>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="swiper-pagination"></div>
+                </div>
+            `;
+        }
+
+        function renderFeatures(container) {
+            container.innerHTML = `
+                <div class="py-20 bg-soft-pink">
+                    <div class="container mx-auto px-6">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                            <div class="text-center space-y-4">
+                                <div class="h-16 w-16 bg-white rounded-full flex items-center justify-center mx-auto shadow-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                </div>
+                                <h3 class="text-xl font-bold">Premium Quality</h3>
+                                <p class="text-sm text-gray-500">Handpicked materials for luxury.</p>
+                            </div>
+                            <!-- ... other features ... -->
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderFeaturedProducts(container, title) {
+            const products = getData('products').slice(0, 4);
+            container.innerHTML = `
+                <div class="py-24 container mx-auto px-6">
+                    <div class="flex justify-between items-end mb-12">
+                        <div>
+                            <h2 class="text-3xl md:text-5xl font-bold">${title || 'Featured Collections'}</h2>
+                            <div class="h-1 w-20 bg-primary mt-4"></div>
+                        </div>
+                        <a href="shop.html" class="text-primary font-bold hover:underline mb-2">View All</a>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+                        ${products.map(p => `
+                            <div class="group cursor-pointer">
+                                <div class="relative h-[450px] overflow-hidden rounded-3xl mb-4 bg-gray-100">
+                                    <img src="${p.image}" class="w-full h-full object-cover transition-all duration-700 group-hover:scale-110">
+                                    <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                    <div class="absolute bottom-6 left-6 right-6 space-y-3 translate-y-20 group-hover:translate-y-0 transition-transform duration-500">
+                                        <select id="color-${p.id}" class="w-full bg-white/90 backdrop-blur px-4 py-3 rounded-xl text-sm font-bold border-none outline-none shadow-lg">
+                                            ${p.colors.map(c => `<option value="${c}">${c}</option>`).join('')}
+                                        </select>
+                                        <button onclick="addToCartById(${p.id})" class="w-full bg-black text-white py-4 rounded-xl font-bold shadow-xl hover:bg-rose-700 transition-colors">Add to Cart</button>
+                                    </div>
+                                </div>
+                                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">${p.category}</p>
+                                <h3 class="font-bold text-lg">${p.name}</h3>
+                                <p class="text-rose-gold font-bold">PKR ${p.price.toLocaleString()}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderCategoryGrid(container) {
+            const cats = getData('categories');
+            container.innerHTML = `
+                <div class="pb-24 container mx-auto px-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        ${cats.map(c => `
+                            <a href="shop.html?type=${c.id}" class="relative h-[500px] overflow-hidden rounded-[3rem] group">
+                                <img src="${c.image}" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex flex-col justify-end p-12">
+                                    <h3 class="text-4xl font-bold text-white mb-2">${c.name}</h3>
+                                    <p class="text-white/80 max-w-sm mb-6">${c.description}</p>
+                                    <span class="inline-block px-8 py-3 bg-white text-black font-bold rounded-full w-fit group-hover:bg-primary group-hover:text-white transition-colors">Explore</span>
+                                </div>
+                            </a>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function addToCartById(id) {
+            const product = getData('products').find(p => p.id === id);
+            const colorEl = document.getElementById(`color-${id}`);
+            const color = colorEl ? colorEl.value : (product.colors ? product.colors[0] : 'Default');
+            if (product) {
+                addToCart(product, color);
+                alert(`${product.name} (${color}) added to cart!`);
+            }
+        }
+
+        renderLandingPage();
+
+        // Admin Shortcut Button
+        function checkAdminShortcut() {
+            if (localStorage.getItem('adminToken')) {
+                const btn = document.createElement('a');
+                btn.href = 'admin-dashboard.html';
+                btn.className = 'fixed bottom-10 right-10 bg-black text-white px-8 py-4 rounded-full font-bold shadow-2xl z-[100] border-2 border-white hover:bg-rose-700 transition-all flex items-center gap-2';
+                btn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37a1.724 1.724 0 002.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                    Back to Admin
+                `;
+                document.body.appendChild(btn);
+            }
+        }
+        checkAdminShortcut();
+    </script>
+</body>
+
+</html>
