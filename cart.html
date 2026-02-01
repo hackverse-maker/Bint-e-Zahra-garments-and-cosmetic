@@ -40,17 +40,35 @@
         <h1 class="text-3xl font-bold text-gray-900 mb-8">Shopping Cart</h1>
 
         <div id="cart-container" class="grid grid-cols-1 lg:grid-cols-3 gap-12">
-            <!-- Cart items will be injected here -->
-            <div class="lg:col-span-2 space-y-4" id="cart-items">
-                <!-- Items list -->
+            <!-- Left side: Items or Empty Message -->
+            <div class="lg:col-span-2 space-y-4">
+                <div id="cart-items" class="space-y-4">
+                    <!-- Items list -->
+                </div>
+
+                <!-- Empty Cart Message (shown inside items container if empty) -->
+                <div id="empty-cart-message"
+                    class="hidden text-center py-20 bg-white rounded-3xl border border-gray-100 shadow-sm">
+                    <div class="max-w-md mx-auto space-y-6">
+                        <div
+                            class="inline-flex items-center justify-center h-20 w-20 bg-gray-50 text-gray-300 rounded-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                            </svg>
+                        </div>
+                        <h2 class="text-2xl font-bold">Your cart is empty</h2>
+                        <a href="shop.html"
+                            class="inline-block bg-black text-white px-8 py-3 rounded-xl font-bold hover:bg-rose-700 transition-all">Start
+                            Shopping</a>
+                    </div>
+                </div>
             </div>
 
             <div class="lg:col-span-1" id="cart-summary">
-                <!-- Order summary -->
+                <!-- Order summary (Always Visible) -->
             </div>
-        </div>
-
-        </div>
         </div>
 
         <div id="admin-access-footer" class="mt-20 max-w-md mx-auto hidden">
@@ -122,39 +140,36 @@
         const cartItemsEl = document.getElementById('cart-items');
         const summaryEl = document.getElementById('cart-summary');
         const containerEl = document.getElementById('cart-container');
-        const emptyEl = document.getElementById('empty-cart');
+        const emptyEl = document.getElementById('empty-cart-message');
 
         function renderCart() {
             const cartItems = getCart();
 
             if (cartItems.length === 0) {
-                containerEl.classList.add('hidden');
+                cartItemsEl.innerHTML = '';
                 emptyEl.classList.remove('hidden');
-                return;
+            } else {
+                emptyEl.classList.add('hidden');
+                cartItemsEl.innerHTML = cartItems.map(item => `
+                    <div class="flex items-center gap-6 p-4 bg-white rounded-2xl border border-gray-100 shadow-sm">
+                        <img src="${item.image}" alt="${item.name}" class="h-24 w-24 object-cover rounded-xl bg-gray-100">
+                        <div class="flex-grow">
+                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">${item.category}</p>
+                            <h3 class="font-bold text-gray-900">${item.name}</h3>
+                            <p class="text-sm font-semibold text-rose-gold">Color: ${item.selectedColor}</p>
+                            <p class="text-sm font-bold text-gray-900 mt-1">PKR ${item.price.toLocaleString()}</p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <button onclick="updateQuantity('${item.cartId}', -1)" class="p-1 hover:bg-gray-100 rounded border border-gray-200">-</button>
+                            <span class="w-8 text-center font-bold">${item.quantity}</span>
+                            <button onclick="updateQuantity('${item.cartId}', 1)" class="p-1 hover:bg-gray-100 rounded border border-gray-200">+</button>
+                        </div>
+                        <button onclick="removeFromCart('${item.cartId}')" class="text-red-500 hover:text-red-600 ml-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                        </button>
+                    </div>
+                `).join('');
             }
-
-            containerEl.classList.remove('hidden');
-            emptyEl.classList.add('hidden');
-
-            cartItemsEl.innerHTML = cartItems.map(item => `
-                <div class="flex items-center gap-6 p-4 bg-white rounded-2xl border border-gray-100 shadow-sm">
-                    <img src="${item.image}" alt="${item.name}" class="h-24 w-24 object-cover rounded-xl bg-gray-100">
-                    <div class="flex-grow">
-                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">${item.category}</p>
-                        <h3 class="font-bold text-gray-900">${item.name}</h3>
-                        <p class="text-sm font-semibold text-rose-gold">Color: ${item.selectedColor}</p>
-                        <p class="text-sm font-bold text-gray-900 mt-1">PKR ${item.price.toLocaleString()}</p>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <button onclick="updateQuantity('${item.cartId}', -1)" class="p-1 hover:bg-gray-100 rounded border border-gray-200">-</button>
-                        <span class="w-8 text-center font-bold">${item.quantity}</span>
-                        <button onclick="updateQuantity('${item.cartId}', 1)" class="p-1 hover:bg-gray-100 rounded border border-gray-200">+</button>
-                    </div>
-                    <button onclick="removeFromCart('${item.cartId}')" class="text-red-500 hover:text-red-600 ml-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                    </button>
-                </div>
-            `).join('');
 
             const subtotal = getSubtotal();
             const tax = subtotal * 0.1; // 10% tax for demo
@@ -176,6 +191,9 @@
                             <span>PKR ${(subtotal + tax).toLocaleString()}</span>
                         </div>
                     </div>
+                    <button onclick="location.href='checkout.html'" class="w-full bg-black text-white py-4 rounded-xl font-bold hover:bg-rose-700 transition-all shadow-lg">
+                        Proceed to Checkout
+                    </button>
                 </div>
             `;
         }
