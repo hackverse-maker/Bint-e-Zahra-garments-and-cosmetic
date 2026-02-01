@@ -136,7 +136,10 @@
                                 <button onclick="moveSection(${i}, -1)" class="p-2 bg-white rounded-lg shadow-sm hover:text-rose-gold" title="Move Up">↑</button>
                                 <button onclick="moveSection(${i}, 1)" class="p-2 bg-white rounded-lg shadow-sm hover:text-rose-gold" title="Move Down">↓</button>
                                 <button onclick="toggleSection('${s.id}')" class="px-4 py-2 rounded-xl text-xs font-bold ${s.active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">${s.active ? 'Active' : 'Hidden'}</button>
-                                <button onclick="deleteSection('${s.id}')" class="p-2 text-red-500 hover:bg-red-50 rounded-lg">
+                                <button onclick="editSection('${s.id}')" class="p-2 text-rose-gold hover:bg-rose-50 rounded-lg" title="Edit Section">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                                </button>
+                                <button onclick="deleteSection('${s.id}')" class="p-2 text-red-500 hover:bg-red-50 rounded-lg" title="Delete Section">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                                 </button>
                             </div>
@@ -190,6 +193,36 @@
                 saveData('pageSections', sections);
                 closeModal();
                 renderSectionsPanel();
+            };
+            modal.style.display = 'flex';
+        }
+
+        function editSection(id) {
+            const sections = getData('pageSections');
+            const s = sections.find(x => x.id === id);
+            if (!s) return;
+
+            mTitle.textContent = "Edit Section";
+            mFields.innerHTML = `
+                <label class="text-xs font-bold text-gray-500 uppercase">Section Type</label>
+                <div class="w-full p-4 bg-gray-100 rounded-xl text-gray-600 font-bold capitalize border">${s.type.replace(/([A-Z])/g, ' $1')}</div>
+                
+                <div id="edit-sec-fields" class="space-y-4 pt-4">
+                    <label class="text-xs font-bold text-gray-500 uppercase">Section Title / Identifier</label>
+                    <input type="text" id="edit-sec-title" value="${s.title || ''}" placeholder="e.g. New Arrivals or Section Label" class="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:ring-1 focus:ring-rose-200">
+                </div>
+            `;
+
+            mForm.onsubmit = (e) => {
+                e.preventDefault();
+                const updatedSections = getData('pageSections');
+                const idx = updatedSections.findIndex(x => x.id === id);
+                if (idx !== -1) {
+                    updatedSections[idx].title = document.getElementById('edit-sec-title').value;
+                    saveData('pageSections', updatedSections);
+                    closeModal();
+                    renderSectionsPanel();
+                }
             };
             modal.style.display = 'flex';
         }
