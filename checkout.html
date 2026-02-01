@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout | Marquise-Vault</title>
+    <title>Checkout | Bint-e-Zahra</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="styles/main.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -87,7 +87,7 @@
                     <a href="index.html" class="flex items-center gap-3 group">
                         <img src="logo-removebg-preview.png" alt="Logo"
                             class="h-10 w-auto object-contain brightness-0 invert">
-                        <span class="text-2xl font-bold text-white tracking-tight">MARQUISE-VAULT</span>
+                        <span class="text-2xl font-bold text-white tracking-tight text-rose-gold">BINT-E-ZAHRA</span>
                     </a>
                     <p class="text-sm leading-relaxed">
                         Premium garments and cosmetics curated for your lifestyle. Experience quality and luxury in
@@ -113,7 +113,7 @@
                 </div>
                 <div>
                     <h4 class="text-white font-semibold mb-6">Contact Us</h4>
-                    <form action="https://formsubmit.co/tariqastory5@gmail.com" method="POST" class="space-y-3">
+                    <form action="https://formsubmit.co/halimasadiya1352@gmail.com" method="POST" class="space-y-3">
                         <input type="text" name="name" placeholder="Name" required
                             class="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm text-white focus:ring-1 focus:ring-indigo-500 outline-none">
                         <input type="email" name="email" placeholder="Email" required
@@ -178,20 +178,27 @@
 
         renderSummary();
 
-        // Admin Shortcut Button
+        // Admin Shortcut & Real-time Access Management
         function checkAdminShortcut() {
+            const existingBtn = document.getElementById('floating-admin-btn');
             if (localStorage.getItem('adminToken')) {
-                const btn = document.createElement('a');
-                btn.href = 'admin-dashboard.html';
-                btn.className = 'fixed bottom-10 right-10 bg-black text-white px-8 py-4 rounded-full font-bold shadow-2xl z-[100] border-2 border-white hover:bg-rose-700 transition-all flex items-center gap-2';
-                btn.innerHTML = `
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37a1.724 1.724 0 002.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                    Back to Admin
-                `;
-                document.body.appendChild(btn);
+                if (!existingBtn) {
+                    const btn = document.createElement('a');
+                    btn.id = 'floating-admin-btn';
+                    btn.href = 'admin-dashboard.html';
+                    btn.className = 'fixed bottom-10 right-10 bg-black text-white px-8 py-4 rounded-full font-bold shadow-2xl z-[100] border-2 border-white hover:bg-rose-700 transition-all flex items-center gap-2 scale-90 md:scale-100';
+                    btn.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37a1.724 1.724 0 002.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                        Back to Admin
+                    `;
+                    document.body.appendChild(btn);
+                }
+            } else if (existingBtn) {
+                existingBtn.remove();
             }
         }
         checkAdminShortcut();
+        window.addEventListener('storage', checkAdminShortcut);
     </script>
 </body>
 
