@@ -284,7 +284,7 @@
             mTitle.textContent = "Add New Slider";
             mFields.innerHTML = `
                 <input type="text" id="s-title" placeholder="Banner Title" required class="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:ring-1 focus:ring-rose-200">
-                <input type="text" id="s-image" placeholder="Image URL" required class="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:ring-1 focus:ring-rose-200">
+                <input type="file" id="s-image" placeholder="Image URL" required class="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:ring-1 focus:ring-rose-200">
                 <input type="text" id="s-link" placeholder="Button Link (e.g. shop.html)" required class="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:ring-1 focus:ring-rose-200">
             `;
             mForm.onsubmit = (e) => {
@@ -401,7 +401,7 @@
                     ${cats.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
                 </select>
                 <input type="number" id="p-price" placeholder="Price (PKR)" required class="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:ring-1 focus:ring-rose-200">
-                <input type="text" id="p-image" placeholder="Image URL" required class="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:ring-1 focus:ring-rose-200">
+                <input type="file" id="p-image" placeholder="Image URL" required class="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:ring-1 focus:ring-rose-200">
             `;
             mForm.onsubmit = (e) => {
                 e.preventDefault();
