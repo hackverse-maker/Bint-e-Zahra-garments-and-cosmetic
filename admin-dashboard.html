@@ -8,6 +8,73 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="styles/main.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        @media (max-width: 768px) {
+            aside {
+                padding: 1.5rem !important;
+                gap: 1.5rem !important;
+                border-right: none !important;
+                border-bottom: 1px solid #e5e7eb;
+            }
+
+            aside .flex-grow {
+                display: flex;
+                overflow-x: auto;
+                gap: 0.5rem;
+                padding-bottom: 0.5rem;
+                scrollbar-width: none;
+            }
+
+            aside .flex-grow::-webkit-scrollbar {
+                display: none;
+            }
+
+            .nav-btn {
+                white-space: nowrap;
+                padding: 0.5rem 1rem !important;
+            }
+
+            aside .flex-col.items-center {
+                flex-direction: row !important;
+                gap: 1rem !important;
+                margin-bottom: 0 !important;
+            }
+
+            aside img {
+                height: 3rem !important;
+            }
+
+            aside .text-center {
+                text-align: left !important;
+            }
+
+            aside .space-y-3,
+            aside .pt-6 {
+                display: none;
+            }
+
+            /* Hide view link and logout from top on mobile */
+            main {
+                padding: 1.5rem !important;
+            }
+
+            #panel-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            #panel-content {
+                padding: 1.5rem !important;
+                border-radius: 1.5rem !important;
+            }
+
+            .modal-content {
+                padding: 1.5rem !important;
+                border-radius: 1.5rem !important;
+            }
+        }
+    </style>
 </head>
 
 <body class="bg-gray-50 flex flex-col md:flex-row min-h-screen">
@@ -69,7 +136,7 @@
 
     <!-- Modal Template -->
     <div id="modal" class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden items-center justify-center p-4 z-[200]">
-        <div class="bg-white p-10 rounded-[2.5rem] max-w-lg w-full shadow-2xl animate-scale">
+        <div class="bg-white p-10 rounded-[2.5rem] max-w-lg w-full shadow-2xl animate-scale modal-content">
             <h2 id="modal-title" class="text-2xl font-bold mb-6">Action</h2>
             <form id="modal-form" class="space-y-4">
                 <div id="modal-fields" class="space-y-4"></div>
@@ -113,6 +180,16 @@
                 case 'products': renderProductsPanel(); break;
                 case 'categories': renderCategoriesPanel(); break;
             }
+        }
+
+        // Helper for image conversion
+        async function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
         }
 
         // --- Sections Management ---
@@ -284,17 +361,42 @@
             mTitle.textContent = "Add New Slider";
             mFields.innerHTML = `
                 <input type="text" id="s-title" placeholder="Banner Title" required class="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:ring-1 focus:ring-rose-200">
-                <input type="file" id="s-image" placeholder="Image URL" required class="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:ring-1 focus:ring-rose-200">
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-gray-500 uppercase">Banner Image</label>
+                    <input type="file" id="s-image-file" accept="image/*" required class="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:ring-1 focus:ring-rose-200">
+                    <div id="slider-preview" class="hidden h-32 w-full rounded-xl overflow-hidden border border-gray-100">
+                        <img id="slider-preview-img" class="w-full h-full object-cover">
+                    </div>
+                </div>
                 <input type="text" id="s-link" placeholder="Button Link (e.g. shop.html)" required class="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:ring-1 focus:ring-rose-200">
             `;
-            mForm.onsubmit = (e) => {
+
+            const imgInput = document.getElementById('s-image-file');
+            const preview = document.getElementById('slider-preview');
+            const previewImg = document.getElementById('slider-preview-img');
+
+            imgInput.onchange = async (e) => {
+                if (e.target.files && e.target.files[0]) {
+                    const base64 = await fileToBase64(e.target.files[0]);
+                    previewImg.src = base64;
+                    preview.classList.remove('hidden');
+                }
+            };
+
+            mForm.onsubmit = async (e) => {
                 e.preventDefault();
                 const sliders = getData('sliders');
                 const newId = sliders.length > 0 ? sliders[sliders.length - 1].id + 1 : 1;
+
+                let imageUrl = '';
+                if (imgInput.files[0]) {
+                    imageUrl = await fileToBase64(imgInput.files[0]);
+                }
+
                 sliders.push({
                     id: newId,
                     title: document.getElementById('s-title').value,
-                    image: document.getElementById('s-image').value,
+                    image: imageUrl,
                     link: document.getElementById('s-link').value
                 });
                 saveData('sliders', sliders);
@@ -314,7 +416,7 @@
         // --- Categories Management ---
         function renderCategoriesPanel() {
             title.textContent = "Product Categories";
-            desc.textContent = "Organize your collections.";
+            desc.textContent = "Organize your collections (Images removed as per requirement).";
             actions.innerHTML = `<button onclick="showCategoryModal()" class="bg-black text-white px-6 py-2.5 rounded-xl font-bold">+ Add Category</button>`;
             const cats = getData('categories');
             content.innerHTML = `
@@ -322,37 +424,67 @@
                     ${cats.map(c => `
                         <div class="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-2xl shadow-sm">
                             <div class="flex items-center gap-4">
-                                <img src="${c.image}" class="h-16 w-16 object-cover rounded-xl bg-gray-50">
+                                <div class="h-12 w-12 bg-rose-50 flex items-center justify-center rounded-xl text-rose-gold font-bold">
+                                    ${c.name.charAt(0)}
+                                </div>
                                 <div>
                                     <h4 class="font-bold text-gray-900">${c.name}</h4>
                                     <p class="text-xs text-gray-400">${c.id}</p>
                                 </div>
                             </div>
-                            <button onclick="deleteCategory('${c.id}')" class="text-red-500 font-bold px-4 py-2 hover:bg-red-50 rounded-xl transition-all">Delete</button>
+                            <div class="flex gap-2">
+                                <button onclick="showCategoryModal('${c.id}')" class="text-rose-gold font-bold px-4 py-2 hover:bg-rose-50 rounded-xl transition-all">Edit</button>
+                                <button onclick="deleteCategory('${c.id}')" class="text-red-500 font-bold px-4 py-2 hover:bg-red-50 rounded-xl transition-all">Delete</button>
+                            </div>
                         </div>
                     `).join('')}
                 </div>
             `;
         }
 
-        function showCategoryModal() {
-            mTitle.textContent = "Add Category";
+        function showCategoryModal(editId = null) {
+            const cats = getData('categories');
+            const editCat = editId ? cats.find(c => c.id === editId) : null;
+
+            mTitle.textContent = editId ? "Edit Category" : "Add Category";
             mFields.innerHTML = `
-                <input type="text" id="c-id" placeholder="Slug ID (e.g. shoes)" required class="w-full p-4 bg-gray-50 rounded-xl outline-none">
-                <input type="text" id="c-name" placeholder="Name" required class="w-full p-4 bg-gray-50 rounded-xl outline-none">
-                <input type="file" id="c-image" placeholder="Cover Image URL" required class="w-full p-4 bg-gray-50 rounded-xl outline-none">
-                <textarea id="c-desc" placeholder="Description" class="w-full p-4 bg-gray-50 rounded-xl outline-none"></textarea>
+                <div class="space-y-4">
+                    <div>
+                        <label class="text-xs font-bold text-gray-500 uppercase">Slug ID (Unique)</label>
+                        <input type="text" id="c-id" placeholder="e.g. shoes" ${editId ? 'disabled' : ''} value="${editCat ? editCat.id : ''}" required class="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:ring-1 focus:ring-rose-200 ${editId ? 'opacity-50 cursor-not-allowed' : ''}">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-gray-500 uppercase">Category Name</label>
+                        <input type="text" id="c-name" placeholder="Name" value="${editCat ? editCat.name : ''}" required class="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:ring-1 focus:ring-rose-200">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-gray-500 uppercase">Description</label>
+                        <textarea id="c-desc" placeholder="Description" class="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:ring-1 focus:ring-rose-200">${editCat ? editCat.description : ''}</textarea>
+                    </div>
+                </div>
             `;
+
             mForm.onsubmit = (e) => {
                 e.preventDefault();
-                const cats = getData('categories');
-                cats.push({
-                    id: document.getElementById('c-id').value.toLowerCase(),
-                    name: document.getElementById('c-name').value,
-                    image: document.getElementById('c-image').value,
-                    description: document.getElementById('c-desc').value
-                });
-                saveData('categories', cats);
+                const categories = getData('categories');
+                const id = document.getElementById('c-id').value.toLowerCase();
+                const name = document.getElementById('c-name').value;
+                const description = document.getElementById('c-desc').value;
+
+                if (editId) {
+                    const idx = categories.findIndex(c => c.id === editId);
+                    if (idx !== -1) {
+                        categories[idx] = { ...categories[idx], name, description };
+                    }
+                } else {
+                    if (categories.some(c => c.id === id)) {
+                        alert("Category ID already exists!");
+                        return;
+                    }
+                    categories.push({ id, name, description });
+                }
+
+                saveData('categories', categories);
                 closeModal();
                 renderCategoriesPanel();
             };
@@ -366,54 +498,133 @@
             renderCategoriesPanel();
         }
 
-        // --- Products Panel (Simplified) ---
+        // --- Products Panel (Enhanced) ---
         function renderProductsPanel() {
             title.textContent = "Products Inventory";
-            desc.textContent = "Manage individual store items.";
+            desc.textContent = "Manage individual store items and their order.";
             actions.innerHTML = `<button onclick="showProductModal()" class="bg-black text-white px-6 py-2.5 rounded-xl font-bold">+ New Product</button>`;
-            const products = getData('products');
+            let products = getData('products');
+
+            // Sort products by order
+            products.sort((a, b) => (a.order || 0) - (b.order || 0));
+
             content.innerHTML = `
                 <div class="grid grid-cols-1 gap-4">
-                    ${products.map(p => `
-                        <div class="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-2xl shadow-sm">
-                            <div class="flex items-center gap-4">
-                                <img src="${p.image}" class="h-16 w-16 object-cover rounded-xl">
+                    ${products.map((p, i) => `
+                        <div class="flex flex-col sm:flex-row items-center justify-between p-4 bg-white border border-gray-100 rounded-2xl shadow-sm gap-4">
+                            <div class="flex items-center gap-4 w-full sm:w-auto">
+                                <div class="bg-gray-50 p-2 rounded-lg text-[10px] font-bold text-gray-400 w-8 text-center">${p.order || i + 1}</div>
+                                <img src="${p.image}" class="h-16 w-16 object-cover rounded-xl shadow-sm">
                                 <div>
-                                    <h4 class="font-bold">${p.name}</h4>
-                                    <p class="text-xs text-rose-gold font-bold">PKR ${p.price.toLocaleString()}</p>
+                                    <h4 class="font-bold text-gray-900">${p.name}</h4>
+                                    <div class="flex items-center gap-2">
+                                        <p class="text-xs text-rose-gold font-bold">PKR ${p.price.toLocaleString()}</p>
+                                        <span class="text-[10px] bg-gray-100 px-2 py-0.5 rounded-full text-gray-500 uppercase">${p.category}</span>
+                                    </div>
                                 </div>
                             </div>
-                            <button onclick="deleteProduct(${p.id})" class="p-2 text-red-500">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                            </button>
+                            <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+                                <div class="flex items-center bg-gray-50 rounded-xl p-1 gap-1">
+                                    <button onclick="moveProduct(${i}, -1)" class="p-2 hover:bg-white hover:shadow-sm rounded-lg transition-all text-gray-500" title="Move Up">↑</button>
+                                    <button onclick="moveProduct(${i}, 1)" class="p-2 hover:bg-white hover:shadow-sm rounded-lg transition-all text-gray-500" title="Move Down">↓</button>
+                                </div>
+                                <button onclick="showProductModal(${p.id})" class="p-2.5 text-rose-gold hover:bg-rose-50 rounded-xl transition-all" title="Edit">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                                </button>
+                                <button onclick="deleteProduct(${p.id})" class="p-2.5 text-red-500 hover:bg-red-50 rounded-xl transition-all" title="Delete">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                </button>
+                            </div>
                         </div>
                     `).join('')}
                 </div>
             `;
         }
 
-        function showProductModal() {
+        function showProductModal(editId = null) {
+            const products = getData('products');
+            const editProd = editId ? products.find(p => p.id === editId) : null;
             const cats = getData('categories');
-            mTitle.textContent = "Add Product";
+
+            mTitle.textContent = editId ? "Edit Product" : "Add Product";
             mFields.innerHTML = `
-                <input type="text" id="p-name" placeholder="Product Name" required class="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:ring-1 focus:ring-rose-200">
-                <select id="p-cat" class="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:ring-1 focus:ring-rose-200">
-                    ${cats.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
-                </select>
-                <input type="number" id="p-price" placeholder="Price (PKR)" required class="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:ring-1 focus:ring-rose-200">
-                <input type="file" id="p-image" placeholder="Image URL" required class="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:ring-1 focus:ring-rose-200">
+                <div class="grid grid-cols-1 gap-4">
+                    <div>
+                        <label class="text-xs font-bold text-gray-500 uppercase">Product Name</label>
+                        <input type="text" id="p-name" placeholder="Product Name" value="${editProd ? editProd.name : ''}" required class="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:ring-1 focus:ring-rose-200">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-xs font-bold text-gray-500 uppercase">Category</label>
+                            <select id="p-cat" class="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:ring-1 focus:ring-rose-200">
+                                ${cats.map(c => `<option value="${c.id}" ${editProd && editProd.category === c.id ? 'selected' : ''}>${c.name}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-gray-500 uppercase">Price (PKR)</label>
+                            <input type="number" id="p-price" placeholder="Price" value="${editProd ? editProd.price : ''}" required class="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:ring-1 focus:ring-rose-200">
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-xs font-bold text-gray-500 uppercase">Product Image</label>
+                            <input type="file" id="p-image-file" accept="image/*" ${editId ? '' : 'required'} class="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:ring-1 focus:ring-rose-200">
+                        </div>
+                        <div id="p-preview" class="${editProd ? '' : 'hidden'} h-48 w-full rounded-2xl overflow-hidden border border-gray-100 bg-gray-50 flex items-center justify-center">
+                            <img id="p-preview-img" src="${editProd ? editProd.image : ''}" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-gray-500 uppercase">Description</label>
+                        <textarea id="p-desc" placeholder="Product Description..." class="w-full p-4 bg-gray-50 rounded-xl outline-none border focus:ring-1 focus:ring-rose-200">${editProd?.description || ''}</textarea>
+                    </div>
+                </div>
             `;
-            mForm.onsubmit = (e) => {
+
+            const imgInput = document.getElementById('p-image-file');
+            const preview = document.getElementById('p-preview');
+            const previewImg = document.getElementById('p-preview-img');
+
+            imgInput.onchange = async (e) => {
+                if (e.target.files && e.target.files[0]) {
+                    const base64 = await fileToBase64(e.target.files[0]);
+                    previewImg.src = base64;
+                    preview.classList.remove('hidden');
+                }
+            };
+
+            mForm.onsubmit = async (e) => {
                 e.preventDefault();
                 const products = getData('products');
-                const newId = products.length > 0 ? products[products.length - 1].id + 1 : 1;
-                products.push({
-                    id: newId,
+
+                let imageUrl = editProd ? editProd.image : '';
+                if (imgInput.files[0]) {
+                    imageUrl = await fileToBase64(imgInput.files[0]);
+                }
+
+                const productData = {
                     name: document.getElementById('p-name').value,
                     category: document.getElementById('p-cat').value,
                     price: parseFloat(document.getElementById('p-price').value),
-                    image: document.getElementById('p-image').value
-                });
+                    description: document.getElementById('p-desc').value,
+                    image: imageUrl
+                };
+
+                if (editId) {
+                    const idx = products.findIndex(p => p.id === editId);
+                    if (idx !== -1) {
+                        products[idx] = { ...products[idx], ...productData };
+                    }
+                } else {
+                    const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
+                    const maxOrder = products.length > 0 ? Math.max(...products.map(p => p.order || 0)) : 0;
+                    products.push({
+                        id: newId,
+                        order: maxOrder + 1,
+                        ...productData
+                    });
+                }
+
                 saveData('products', products);
                 closeModal();
                 renderProductsPanel();
@@ -421,11 +632,23 @@
             modal.style.display = 'flex';
         }
 
-        function deleteProduct(id) {
+        function moveProduct(index, delta) {
             let products = getData('products');
-            products = products.filter(p => p.id !== id);
-            saveData('products', products);
-            renderProductsPanel();
+            products.sort((a, b) => (a.order || 0) - (b.order || 0));
+
+            const newIndex = index + delta;
+            if (newIndex >= 0 && newIndex < products.length) {
+                // Swap orders
+                const tempOrder = products[index].order || (index + 1);
+                products[index].order = products[newIndex].order || (newIndex + 1);
+                products[newIndex].order = tempOrder;
+
+                // Final safety: ensure all have orders
+                products.forEach((p, idx) => { if (!p.order) p.order = idx + 1; });
+
+                saveData('products', products);
+                renderProductsPanel();
+            }
         }
 
         function closeModal() { modal.style.display = 'none'; }
